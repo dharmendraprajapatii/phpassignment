@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: cidroy_app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    command: bash docker/entrypoint.sh
+    depends_on:
+      - db
+      - localstack
+
+  db:
+    image: mysql:8
+    container_name: cidroy_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: cidroy
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+
+  localstack:
+    image: localstack/localstack:2.3
+    container_name: cidroy_localstack
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+    ports:
+      - "4566:4566"
+    volumes:
+      - ./docker/localstack/init:/etc/localstack/init/ready.d
+
+  terraform:
+    image: hashicorp/terraform:1.8
+    container_name: cidroy_terraform
+    depends_on:
+      - localstack
+    working_dir: /infra
+    volumes:
+      - ./infra:/infra
+    command:
+      - sh
+      - -c
+      - sleep 10 && terraform init && terraform apply -auto-approve
