@@ -1,6 +1,6 @@
 FROM php:8.4-cli
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -18,17 +18,11 @@ WORKDIR /var/www
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Copy composer files first
-COPY composer.json composer.lock ./
-
-# Install dependencies (skip scripts)
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
-
-# Copy full project
+# Copy FULL project first
 COPY . .
 
-# Run Laravel scripts AFTER files exist
-RUN php artisan package:discover --ansi || true
+# Install dependencies
+RUN composer install --no-interaction --prefer-dist
 
 # Fix permissions
 RUN chmod -R 775 storage bootstrap/cache
