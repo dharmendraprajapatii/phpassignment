@@ -4,7 +4,7 @@ Backend service for ingesting orders, planning dispatch batches, exporting batch
 
 ## Summary
 
-This project implements the take-home assignment as a Laravel service with:
+This project implements the live work as a Laravel service with:
 
 - JSON batch ingestion
 - S3 CSV ingestion through LocalStack
@@ -290,12 +290,12 @@ Two jobs are configured in [app/Console/Kernel.php](app/Console/Kernel.php:1):
 ### Why two ingestion modes
 
 - JSON API requests are processed immediately because they already represent an explicit batch.
-- S3 CSV ingestion is treated as operational intake, then planned in the daily batch window required by the assignment.
+- S3 CSV ingestion is treated as operational intake, then planned in the daily batch window required by the work.
 
 ### Why polling for S3
 
-- The assignment allows polling, event-driven, or presigned URL flows.
-- For a take-home exercise, polling is simpler to reason about and easier to reproduce locally with LocalStack.
+- The work allows polling, event-driven, or presigned URL flows.
+- For a live exercise, polling is simpler to reason about and easier to reproduce locally with LocalStack.
 
 ### External dependency fallback choices
 
@@ -347,6 +347,6 @@ Current coverage includes:
 ## Known Limitations / Next Steps
 
 - Address normalization is improved via geocoding, but still not a full postal-address parser for highly ambiguous addresses.
-- The service uses LocalStack S3 only, which satisfies the assignment minimum but does not model a richer AWS event pipeline.
+- The service uses LocalStack S3 only, which satisfies the work minimum but does not model a richer AWS event pipeline.
 - A more exhaustive timezone-boundary regression test would strengthen confidence further.
 - Production hardening could add caching, retry backoff tuning, and structured observability around external APIs.
